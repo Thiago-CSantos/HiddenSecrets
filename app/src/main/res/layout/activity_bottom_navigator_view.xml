@@ -9,10 +9,19 @@
     <!-- Container para o conteúdo principal -->
     <FrameLayout
         android:id="@+id/fragmento_container"
+        android:padding="20dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="top"
-        android:layout_marginBottom="56dp"/>
+        android:backgroundTint="@color/corPadrao"
+        android:layout_marginBottom="56dp">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/chart"
+            android:layout_width="match_parent"
+            android:layout_height="255dp"/>
+
+    </FrameLayout>
 
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -21,5 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:menu="@menu/menu_navbar" />
+
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

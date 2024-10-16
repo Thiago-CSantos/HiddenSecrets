@@ -8,17 +8,19 @@ pluginManagement {
             }
         }
         mavenCentral()
+        maven { url = uri("https://jitpack.io") } // Adicione esta linha
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") } // Adicione esta linha
     }
 }
 
 rootProject.name = "HiddenSecrets"
 include(":app")
- 

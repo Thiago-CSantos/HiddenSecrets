@@ -36,8 +36,8 @@ android {
 }
 
 dependencies {
-    //YCharts lib de graficos
-    implementation("co.yml:ycharts:2.1.0")
+    // YCharts lib de gráficos
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

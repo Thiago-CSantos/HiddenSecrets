@@ -8,4 +8,5 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="corPadrao">#171820</color>
+    <color name="corSecundario">#252430</color>
 </resources>
