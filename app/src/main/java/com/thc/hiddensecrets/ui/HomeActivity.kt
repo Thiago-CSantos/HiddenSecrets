@@ -4,6 +4,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.Description
 import com.github.mikephil.charting.components.XAxis
@@ -19,7 +21,10 @@ import java.util.Arrays
 class HomeActivity : AppCompatActivity() {
 
     lateinit var lineChart: LineChart
+    lateinit var recyclerView: RecyclerView
+    private lateinit var myAdapter: MyAdapter
     var xValues: List<String> = listOf()
+    private var data: List<String> = listOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,53 +42,23 @@ class HomeActivity : AppCompatActivity() {
         lineChart.xAxis.setDrawAxisLine(false)
         lineChart.axisRight.isEnabled = false       // Desativa o eixo direito
         lineChart.description.isEnabled = false
-
-        
         setData()
 
-//
-//
-//        description.text = "Record"
-//        description.setPosition(150f, 15f)
-//        lineChart.description = description
-//        lineChart.axisRight.setDrawLabels(true)
-//
-//        xValues = listOf("sajkdhasjk", "FDSFDSF", "FDGDFG")
-//
-//        val xAxis: XAxis = lineChart.xAxis
-//        xAxis.textColor = Color.parseColor("#AAAAAA")
-//        xAxis.setDrawLabels(true)
-//        xAxis.position = XAxis.XAxisPosition.BOTTOM
-//        xAxis.valueFormatter = IndexAxisValueFormatter(xValues)
-//        xAxis.setLabelCount(4)
-//        xAxis.granularity = 1f
-//
-//        var yAxis = lineChart.axisLeft
-//        yAxis.axisLineWidth = 2f
-//        yAxis.textColor = Color.parseColor("#AAAAAA")
-//        yAxis.axisLineColor = Color.parseColor("#00B74F")
-//        yAxis.setLabelCount(10)
-//
-//        var e1: MutableList<Entry> = mutableListOf()
-//        e1.add(Entry(0f, 10f))
-//        e1.add(Entry(1f, 10f))
-//        e1.add(Entry(2f, 15f))
-//        e1.add(Entry(3f, 45f))
-//
-//        var dataSet1: LineDataSet = LineDataSet(e1, "Rótulo 1")
-//        dataSet1.color = Color.parseColor("#00FF00")
-//        dataSet1.valueTextColor = Color.parseColor("#FFFFFF") // Cor dos valores em branco
-//        dataSet1.setDrawFilled(true)  // Habilita o preenchimento
-//        dataSet1.mode = LineDataSet.Mode.CUBIC_BEZIER // Habilitar linhas cúbicas
-//
-//
-//        val lineData: LineData = LineData(dataSet1)
-//
-//        lineChart.data = lineData
-//        lineChart.invalidate()
-//
-//        val navBar = findViewById<BottomNavigationView>(R.id.bottom_navigation)
-//        navBar.setBackgroundColor(Color.RED)
+        // RecyclerView
+        recyclerView = findViewById(R.id.recyclerView) // Certifique-se de ter um RecyclerView no seu layout
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        // Exemplo de URLs de imagens
+        val imageUrls = listOf(
+            "https://files.tecnoblog.net/wp-content/uploads/2022/09/stable-diffusion-imagem.jpg",
+            "https://cdn.pixabay.com/photo/2024/06/06/22/19/piece-8813495_640.png",
+            // Adicione mais URLs conforme necessário
+        )
+
+        val myAdapter = MyAdapter(this, imageUrls)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.adapter = myAdapter
+
     }
     private fun setData() {
         val entries = mutableListOf<Entry>()
@@ -98,8 +73,8 @@ class HomeActivity : AppCompatActivity() {
 
         val lineDataSet = LineDataSet(entries, "Valores")
         lineDataSet.color = 0xFF00FF00.toInt() // Cor da linha
-        lineDataSet.valueTextColor = 0xFF000000.toInt() // Cor do texto
-        lineDataSet.lineWidth = 0.5f // Espessura da linha
+        lineDataSet.valueTextColor = 0xFFFFFFFF.toInt() // Cor do texto
+        lineDataSet.lineWidth = 2f // Espessura da linha
         lineDataSet.circleRadius = 2f // Raio dos círculos nos pontos
         lineDataSet.setDrawCircles(true) // Desenhar círculos nos pontos
         lineDataSet.setDrawValues(true) // Desenhar valores acima dos pontos
