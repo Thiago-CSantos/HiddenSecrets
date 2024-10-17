@@ -1,5 +1,6 @@
 package com.thc.hiddensecrets.ui
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
@@ -30,6 +31,23 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_bottom_navigator_view)
+
+        val bottom = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        val bottomTrovao = bottom.menu.findItem(R.id.navigation_dashboard)
+
+        bottomTrovao.setOnMenuItemClickListener {
+            val intent: Intent = Intent(this, DashboardActivity::class.java)
+            startActivity(intent)
+            // Ação para o item "Home"
+            true
+        }
+        // Se você quiser definir outro comportamento para o item "Home"
+        val homeMenuItem = bottom.menu.findItem(R.id.navigation_home)
+        homeMenuItem.setOnMenuItemClickListener {
+            // Ação para o item "Home"
+            true
+        }
+
         val rootView = findViewById<View>(android.R.id.content)
         rootView.setBackgroundColor(Color.parseColor("#171820"))
         lineChart = findViewById(R.id.chart)
@@ -45,7 +63,8 @@ class HomeActivity : AppCompatActivity() {
         setData()
 
         // RecyclerView
-        recyclerView = findViewById(R.id.recyclerView) // Certifique-se de ter um RecyclerView no seu layout
+        recyclerView =
+            findViewById(R.id.recyclerView) // Certifique-se de ter um RecyclerView no seu layout
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         // Exemplo de URLs de imagens
@@ -60,6 +79,7 @@ class HomeActivity : AppCompatActivity() {
         recyclerView.adapter = myAdapter
 
     }
+
     private fun setData() {
         val entries = mutableListOf<Entry>()
 

@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="40dp">
+    android:padding="40dp"
+    >
 
 
     <ImageView
@@ -24,6 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:drawableLeft="@drawable/message"
+        android:drawablePadding="10dp"
         android:ems="10"
         android:hint="@string/email"
         android:inputType="textEmailAddress"
@@ -38,6 +40,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="25dp"
         android:drawableLeft="@drawable/baseline_lock_open_24"
+        android:drawablePadding="10dp"
         android:drawableRight="@drawable/see_hiden"
         android:ems="10"
         android:hint="@string/senha"
@@ -106,13 +109,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2">
+        app:layout_constraintTop_toBottomOf="@+id/imageView2"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/textView3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="40dp"
+
             android:paddingRight="8dp"
             android:text="@string/ainda_n_o_possui_uma_conta" />
 
@@ -121,6 +125,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/cadastre_se"
+
             android:textStyle="bold" />
     </LinearLayout>
 
