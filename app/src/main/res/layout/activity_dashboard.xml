@@ -23,22 +23,32 @@
 
 
     <LinearLayout
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
-        android:layout_margin="25dp"
         android:layout_height="wrap_content"
+        android:layout_margin="25dp"
         android:background="@color/corSecundario"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPesquisa"
-        tools:layout_editor_absoluteX="39dp"
-        android:orientation="vertical"
         android:gravity="center_horizontal"
-        >
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPesquisa"
+        tools:layout_editor_absoluteX="39dp">
+
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="20dp"
+            android:scaleType="centerCrop" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/recyclerView2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="320dp"
             android:layout_marginTop="16dp"
-            android:background="@color/corSecundario" />
+            android:background="@color/corSecundario"
+            app:layout_constraintBottom_toTopOf="@+id/imageView3"
+            app:layout_constraintTop_toBottomOf="@+id/imageView4" />
 
         <FrameLayout
             android:layout_width="170dp"
@@ -48,26 +58,43 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword2">
 
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:srcCompat="@drawable/bg_button_register"
-                android:scaleType="fitXY" />
-
-            <TextView
-                android:id="@+id/textView00"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/registrar"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_gravity="center" />
 
         </FrameLayout>
 
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="150dp"
+        android:layout_height="34dp"
+        android:layout_marginBottom="50dp"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
+        app:srcCompat="@drawable/bg_button_register" />
+
+    <TextView
+        android:id="@+id/textView00"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/ler_mais"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+        app:layout_constraintEnd_toEndOf="@+id/imageView3"
+        app:layout_constraintStart_toStartOf="@+id/imageView3"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+
+    <!-- Bottom Navigation -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:menu="@menu/menu_navbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
