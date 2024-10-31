@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">HiddenSecrets</string>
+    <string name="senha">Senha</string>
+    <string name="email">Email</string>
+    <string name="manterConectado">Manter-me conectado</string>
+    <string name="esqueci_a_senha"> E͟s͟q͟u͟e͟c͟e͟u͟ "s͟e͟n͟h͟a͟?"</string>
+    <string name="entrar">Entrar</string>
+    <string name="ainda_n_o_possui_uma_conta">Ainda não possui uma conta?</string>
+    <string name="cadastre_se">Cadastre-se</string>
+    <string name="seu_nome">Seu nome</string>
+    <string name="telefone">Telefone</string>
+    <string name="registrar">Registrar</string>
+    <string name="home">Home</string>
+    <string name="trov_o">Trovão</string>
+    <string name="qual_a_o_deseja_procurar_hoje">Qual ação deseja procurar hoje?</string>
+    <string name="ler_mais">Ler mais</string>
+</resources>
