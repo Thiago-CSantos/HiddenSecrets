@@ -56,7 +56,11 @@
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+<<<<<<< HEAD
         android:layout_margin="16dp"
+=======
+        android:layout_margin="25dp"
+>>>>>>> fbcb4b9537acc2a731a46d981ea91e7bc42c64f9
         android:background="@color/corSecundario"
         android:gravity="center_horizontal"
         android:orientation="vertical"
@@ -97,12 +101,18 @@
         android:id="@+id/imageView3"
         android:layout_width="150dp"
         android:layout_height="34dp"
+<<<<<<< HEAD
         android:layout_marginTop="4dp"
         android:layout_marginBottom="3dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toTopOf="@+id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
+=======
+        android:layout_marginBottom="50dp"
+        android:scaleType="fitXY"
+        app:layout_constraintEnd_toEndOf="parent"
+>>>>>>> fbcb4b9537acc2a731a46d981ea91e7bc42c64f9
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout3"
         app:srcCompat="@drawable/bg_button_register" />
@@ -119,19 +129,30 @@
         app:layout_constraintBottom_toBottomOf="@+id/imageView3"
         app:layout_constraintEnd_toEndOf="@+id/imageView3"
         app:layout_constraintStart_toStartOf="@+id/imageView3"
+<<<<<<< HEAD
         app:layout_constraintTop_toTopOf="@+id/imageView3" />
+=======
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout3" />
+>>>>>>> fbcb4b9537acc2a731a46d981ea91e7bc42c64f9
 
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
+<<<<<<< HEAD
         android:background="@color/corSecundario"
+=======
+>>>>>>> fbcb4b9537acc2a731a46d981ea91e7bc42c64f9
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
+<<<<<<< HEAD
         app:menu="@menu/menu_navbar"
         app:itemIconTint="@color/green"
         app:itemTextColor="@color/green"
         />
+=======
+        app:menu="@menu/menu_navbar" />
+>>>>>>> fbcb4b9537acc2a731a46d981ea91e7bc42c64f9
 
 </androidx.constraintlayout.widget.ConstraintLayout>

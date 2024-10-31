@@ -134,6 +134,7 @@
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
+<<<<<<< HEAD
         android:background="@color/corSecundario"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -143,6 +144,12 @@
         app:itemIconTint="@color/green"
         app:itemTextColor="@color/green"
         />
+=======
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        app:menu="@menu/menu_navbar" />
+>>>>>>> fbcb4b9537acc2a731a46d981ea91e7bc42c64f9
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

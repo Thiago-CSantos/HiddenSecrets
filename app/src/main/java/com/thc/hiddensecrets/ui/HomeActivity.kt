@@ -50,7 +50,6 @@ class HomeActivity : AppCompatActivity() {
             // Ação para o item "Home"
             true
         }
-
         // Se você quiser definir outro comportamento para o item "Home"
         val homeMenuItem = bottom.menu.findItem(R.id.navigation_home)
         homeMenuItem.setOnMenuItemClickListener {
