@@ -24,6 +24,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var _email: EditText;
     private lateinit var _senha: EditText;
 
+    private val retrofitClient by lazy {
+        RetrofitClient(this).createService(ApiService::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
@@ -75,7 +79,6 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val retrofitClient = RetrofitClient().createService(ApiService::class.java)
         val loginRequest = LoginRequest(email, password)
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -83,6 +86,16 @@ class MainActivity : AppCompatActivity() {
                 val response = retrofitClient.login(loginRequest)
 
                 if (response.isSuccessful) {
+
+                    val token = response.body()?.token
+
+                    // Salvar o token JWT no SharedPreferences
+                    val sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    editor.putString("jwtToken", token) // 'token' é o JWT retornado da API
+                    editor.apply()
+
+
                     // Navega para a HomeActivity no Main Dispatcher
                     withContext(Dispatchers.Main) {
                         val intent = Intent(this@MainActivity, HomeActivity::class.java)
