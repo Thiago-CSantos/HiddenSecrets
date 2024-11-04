@@ -13,9 +13,16 @@ import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.thc.hiddensecrets.R
+import com.thc.hiddensecrets.Service.ApiService
+import com.thc.hiddensecrets.network.RetrofitClient
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class HomeActivity : AppCompatActivity() {
@@ -25,6 +32,9 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var myAdapter: MyAdapter
     var xValues: List<String> = listOf()
     private var data: List<String> = listOf()
+    private val retrofitClient by lazy {
+        RetrofitClient(this).createService(ApiService::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,81 +99,79 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun setData() {
-        val entries = mutableListOf<Entry>()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val response = retrofitClient.ibovespa()
 
-        // Adicione seus dados aqui (valores fictícios)
-        val years = listOf(
-            1990,
-            1992,
-            1994,
-            1996,
-            1998,
-            2000,
-            2002,
-            2004,
-            2006,
-            2008,
-            2010,
-            2012,
-            2014,
-            2016,
-            2018,
-            2020,
-            2022,
-            2024,
-            2026,
-            2028,
-            2030
-        )
-        val values = listOf(
-            30f,
-            50f,
-            70f,
-            85f,
-            90f,
-            95f,
-            50f,
-            60f,
-            62f,
-            65f,
-            70f,
-            120f,
-            110f,
-            60f,
-            75f,
-            80f,
-            100f,
-            95f,
-            80f,
-            105f,
-            110f,
-            115f,
-            130f,
-            140f,
-            150f
-        )
+                if (response.isSuccessful) {
+                    response.body()?.let { dadosResponse ->
+                        val entries = mutableListOf<Entry>()
+                        val months = mutableListOf<String>() // Para armazenar os rótulos dos meses
 
+                        // Processando os dados do JSON
+                        for (dado in dadosResponse.dados) {
+                            // Converter data para um formato que o gráfico entenda
+                            val splitDate = dado.data.split("-")
+                            val month = splitDate[1].toFloat() // Meses
+                            val fechamento = dado.fechamento // Fechamento
 
-        for (i in years.indices) {
-            entries.add(Entry(years[i].toFloat(), values[i]))
+                            // Adiciona a entrada ao gráfico
+                            entries.add(Entry(month, fechamento))
+                            // Adiciona o mês correspondente à lista de meses
+                            months.add(getMonthName(month.toInt())) // Adiciona o nome do mês
+                        }
+
+                        // Atualiza o gráfico na thread principal
+                        withContext(Dispatchers.Main) {
+                            val lineDataSet = LineDataSet(entries, "Valores")
+                            lineDataSet.color = 0xFF00FF00.toInt() // Cor da linha
+                            lineDataSet.valueTextColor = 0xFFFFFFFF.toInt() // Cor do texto
+                            lineDataSet.lineWidth = 2f // Espessura da linha
+                            lineDataSet.circleRadius = 2f // Raio dos círculos nos pontos
+                            lineDataSet.setDrawCircles(true) // Desenhar círculos nos pontos
+                            lineDataSet.setDrawValues(true) // Desenhar valores acima dos pontos
+
+                            // Habilitar linhas cúbicas
+                            lineDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+                            lineChart.axisLeft.textColor = 0xFFFFFFFF.toInt()
+                            lineChart.xAxis.textColor = 0xFFFFFFFF.toInt()
+
+                            // Define rótulos personalizados para o eixo X
+                            lineChart.xAxis.valueFormatter = IndexAxisValueFormatter(months)
+
+                            val lineData = LineData(lineDataSet)
+                            lineChart.data = lineData
+                            lineChart.legend.textColor = 0xFFFFFFFF.toInt()
+                            lineChart.invalidate() // Atualiza o gráfico
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                // Trate erros aqui
+            }
         }
-
-        val lineDataSet = LineDataSet(entries, "Valores")
-        lineDataSet.color = 0xFF00FF00.toInt() // Cor da linha
-        lineDataSet.valueTextColor = 0xFFFFFFFF.toInt() // Cor do texto
-        lineDataSet.lineWidth = 2f // Espessura da linha
-        lineDataSet.circleRadius = 2f // Raio dos círculos nos pontos
-        lineDataSet.setDrawCircles(true) // Desenhar círculos nos pontos
-        lineDataSet.setDrawValues(true) // Desenhar valores acima dos pontos
-
-        // Habilitar linhas cúbicas
-        lineDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
-        lineChart.axisLeft.textColor = 0xFFFFFFFF.toInt()
-        lineChart.xAxis.textColor = 0xFFFFFFFF.toInt()
-        val lineData = LineData(lineDataSet)
-        lineChart.data = lineData
-        lineChart.legend.textColor = 0xFFFFFFFF.toInt()
-        lineChart.invalidate() // Atualiza o gráfico
     }
+
+    // Função para obter o nome do mês
+    private fun getMonthName(month: Int): String {
+        return when (month) {
+            1 -> "Jan"
+            2 -> "Fev"
+            3 -> "Mar"
+            4 -> "Abr"
+            5 -> "Mai"
+            6 -> "Jun"
+            7 -> "Jul"
+            8 -> "Ago"
+            9 -> "Set"
+            10 -> "Out"
+            11 -> "Nov"
+            12 -> "Dez"
+            else -> ""
+        }
+    }
+
+
 
 }
