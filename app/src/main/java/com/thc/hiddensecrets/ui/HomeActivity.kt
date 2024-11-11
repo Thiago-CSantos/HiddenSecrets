@@ -1,37 +1,37 @@
 package com.thc.hiddensecrets.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.LineChart
-
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.thc.hiddensecrets.R
 import com.thc.hiddensecrets.Service.ApiService
 import com.thc.hiddensecrets.network.RetrofitClient
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-
+import com.thc.hiddensecrets.utils.ItemData
+import kotlinx.coroutines.*
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class HomeActivity : AppCompatActivity() {
 
+    private lateinit var textValue: TextView
     lateinit var lineChart: LineChart
     lateinit var recyclerView: RecyclerView
     private lateinit var myAdapter: MyAdapter
-    var xValues: List<String> = listOf()
-    private var data: List<String> = listOf()
     private val retrofitClient by lazy {
         RetrofitClient(this).createService(ApiService::class.java)
     }
@@ -41,29 +41,22 @@ class HomeActivity : AppCompatActivity() {
         supportActionBar?.hide()
         setContentView(R.layout.activity_bottom_navigator_view)
 
+        textValue = findViewById<EditText>(R.id.text_value)
+
         val bottom = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         val bottomTrovao = bottom.menu.findItem(R.id.navigation_dashboard)
         val bottomHome = bottom.menu.findItem(R.id.navigation_home)
 
         val imageView = findViewById<ImageView>(R.id.imageViewItem)
 
-        // Defina o clique para mudar a imagem
+        // Navegação entre telas
         imageView.setOnClickListener {
-            // Mudar a imagem para outra (por exemplo, outro drawable)
             setContentView(R.layout.activity_profile)
         }
 
-        // navega para outra tela pelo trovão
         bottomTrovao.setOnMenuItemClickListener {
-            val intent: Intent = Intent(this, DashboardActivity::class.java)
+            val intent = Intent(this, DashboardActivity::class.java)
             startActivity(intent)
-            // Ação para o item "Home"
-            true
-        }
-        // Se você quiser definir outro comportamento para o item "Home"
-        val homeMenuItem = bottom.menu.findItem(R.id.navigation_home)
-        homeMenuItem.setOnMenuItemClickListener {
-            // Ação para o item "Home"
             true
         }
 
@@ -71,31 +64,45 @@ class HomeActivity : AppCompatActivity() {
         rootView.setBackgroundColor(Color.parseColor("#171820"))
         lineChart = findViewById(R.id.chart)
 
-        // config do grafico para ficar igual a do figma
-        lineChart.setBackgroundColor(Color.TRANSPARENT) // Cor de fundo
-        lineChart.axisLeft.setDrawGridLines(false)  // Desativa as linhas de grade no eixo Y
-        lineChart.xAxis.setDrawGridLines(false)     // Desativa as linhas de grade no eixo X
+        // Configuração do gráfico
+        lineChart.setBackgroundColor(Color.TRANSPARENT)
+        lineChart.axisLeft.setDrawGridLines(false)
+        lineChart.xAxis.setDrawGridLines(false)
         lineChart.xAxis.setDrawLabels(false)
         lineChart.xAxis.setDrawAxisLine(false)
-        lineChart.axisRight.isEnabled = false       // Desativa o eixo direito
+        lineChart.axisLeft.isEnabled = false
+        lineChart.axisRight.isEnabled = false
         lineChart.description.isEnabled = false
+        setValor()
         setData()
 
         // RecyclerView
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        // Exemplo de URLs de imagens
-        val imageUrls = listOf(
-            "https://ichef.bbci.co.uk/news/1024/branded_portuguese/2df9/live/04b0f080-5318-11ef-b2d2-cdb23d5d7c5b.jpg",
-            "https://f.i.uol.com.br/fotografia/2024/07/17/172124012966980a41457a1_1721240129_3x2_md.jpg",
-            // Adicione mais URLs conforme necessário
-        )
+        CoroutineScope(Dispatchers.Main).launch {
+            val item = newsImages()
+            myAdapter = MyAdapter(this@HomeActivity, item)
+            recyclerView.adapter = myAdapter
+        }
+    }
 
-        val myAdapter = MyAdapter(this, imageUrls)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = myAdapter
+    private suspend fun newsImages(): MutableList<ItemData?> {
+        val deferred = CoroutineScope(Dispatchers.IO).async {
+            val response = retrofitClient.news("IBOVESPA", primeiroDiaDoMes(), "pt-br")
+            val articles = response.body()?.articles
+            val item: MutableList<ItemData?> = mutableListOf()
 
+            if (articles == null) {
+                item.add(ItemData("https://ichef.bbci.co.uk/news/1024/branded_portuguese/2df9/live/04b0f080-5318-11ef-b2d2-cdb23d5d7c5b.jpg", ""))
+                item.add(ItemData("https://f.i.uol.com.br/fotografia/2024/07/17/172124012966980a41457a1_1721240129_3x2_md.jpg", ""))
+                return@async item
+            }
+
+            articles.forEach{ article -> item.add(ItemData(article.urlToImage, article.title ?: "")) }
+            return@async item
+        }
+        return deferred.await()
     }
 
     private fun setData() {
@@ -106,72 +113,68 @@ class HomeActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     response.body()?.let { dadosResponse ->
                         val entries = mutableListOf<Entry>()
-                        val months = mutableListOf<String>() // Para armazenar os rótulos dos meses
+                        val labels = mutableListOf<String>()
+                        val fechamentoValues = dadosResponse.dados.map { it.fechamento }
 
-                        // Processando os dados do JSON
-                        for (dado in dadosResponse.dados) {
-                            // Converter data para um formato que o gráfico entenda
-                            val splitDate = dado.data.split("-")
-                            val month = splitDate[1].toFloat() // Meses
-                            val fechamento = dado.fechamento // Fechamento
+                        val minValue = fechamentoValues.minOrNull() ?: 0f
+                        val maxValue = fechamentoValues.maxOrNull() ?: 0f
 
-                            // Adiciona a entrada ao gráfico
-                            entries.add(Entry(month, fechamento))
-                            // Adiciona o mês correspondente à lista de meses
-                            months.add(getMonthName(month.toInt())) // Adiciona o nome do mês
+                        // Ajuste os limites do eixo Y para focar nas variações
+                        lineChart.axisLeft.axisMinimum = minValue - 500f
+                        lineChart.axisLeft.axisMaximum = maxValue + 500f
+
+                        for ((index, dado) in dadosResponse.dados.withIndex()) {
+                            val fechamento = dado.fechamento
+                            entries.add(Entry(index.toFloat(), fechamento))
+                            labels.add(dado.data)
                         }
 
-                        // Atualiza o gráfico na thread principal
                         withContext(Dispatchers.Main) {
                             val lineDataSet = LineDataSet(entries, "Valores")
-                            lineDataSet.color = 0xFF00FF00.toInt() // Cor da linha
-                            lineDataSet.valueTextColor = 0xFFFFFFFF.toInt() // Cor do texto
-                            lineDataSet.lineWidth = 2f // Espessura da linha
-                            lineDataSet.circleRadius = 2f // Raio dos círculos nos pontos
-                            lineDataSet.setDrawCircles(true) // Desenhar círculos nos pontos
-                            lineDataSet.setDrawValues(true) // Desenhar valores acima dos pontos
-
-                            // Habilitar linhas cúbicas
+                            lineDataSet.color = 0xFF00FF00.toInt()
+                            lineDataSet.valueTextColor = 0xFFFFFFFF.toInt()
+                            lineDataSet.lineWidth = 2f
+                            lineDataSet.circleRadius = 2f
+                            lineDataSet.setDrawCircles(true)
+                            lineDataSet.setDrawValues(true)
                             lineDataSet.mode = LineDataSet.Mode.CUBIC_BEZIER
+
                             lineChart.axisLeft.textColor = 0xFFFFFFFF.toInt()
                             lineChart.xAxis.textColor = 0xFFFFFFFF.toInt()
-
-                            // Define rótulos personalizados para o eixo X
-                            lineChart.xAxis.valueFormatter = IndexAxisValueFormatter(months)
+                            lineChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
+                            lineChart
+                            lineChart.xAxis.setLabelCount(4, true)
 
                             val lineData = LineData(lineDataSet)
                             lineChart.data = lineData
                             lineChart.legend.textColor = 0xFFFFFFFF.toInt()
-                            lineChart.invalidate() // Atualiza o gráfico
+                            lineChart.invalidate()
                         }
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                // Trate erros aqui
             }
         }
     }
 
-    // Função para obter o nome do mês
-    private fun getMonthName(month: Int): String {
-        return when (month) {
-            1 -> "Jan"
-            2 -> "Fev"
-            3 -> "Mar"
-            4 -> "Abr"
-            5 -> "Mai"
-            6 -> "Jun"
-            7 -> "Jul"
-            8 -> "Ago"
-            9 -> "Set"
-            10 -> "Out"
-            11 -> "Nov"
-            12 -> "Dez"
-            else -> ""
+    @SuppressLint("SetTextI18n")
+    private fun setValor() {
+
+        CoroutineScope(Dispatchers.Main).launch {
+            val response = retrofitClient.ibovespa()
+            Log.d("RESPOSTA", response.body().toString())
+            val a = response.body()?.dados?.lastOrNull()?.fechamento
+            textValue.text = "RS " + a.toString()
+
         }
     }
 
-
+    private fun primeiroDiaDoMes(): String {
+        val hoje = LocalDate.now()
+        val primeiroDia = hoje.withDayOfMonth(1)  // Define o dia como o primeiro do mês
+        val formato = DateTimeFormatter.ofPattern("yyyy-MM-dd") // Define o formato
+        return primeiroDia.format(formato)
+    }
 
 }

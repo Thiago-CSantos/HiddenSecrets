@@ -5,10 +5,12 @@ import com.thc.hiddensecrets.network.request.LoginRequest
 import com.thc.hiddensecrets.network.response.CreateUserResponse
 import com.thc.hiddensecrets.network.response.DadosResponse
 import com.thc.hiddensecrets.network.response.LoginResponse
+import com.thc.hiddensecrets.network.response.NewsResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 interface ApiService {
     @POST("/login")
@@ -19,5 +21,8 @@ interface ApiService {
 
     @GET("/ibovespa")
     suspend fun ibovespa(): Response<DadosResponse>
+
+    @GET("/news")
+    suspend fun news(@Query("q") q: String, @Query("from") from: String, @Query("language") language: String): Response<NewsResponse>
 
 }

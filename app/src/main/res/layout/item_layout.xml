@@ -15,14 +15,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
+<!-- Essa é a descrição-->
     <TextView
         android:id="@+id/textViewItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:background="#80000000"
-        android:text="Descrição da Imagem"
+        android:text=""
         android:textColor="#FFFFFF"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/imageViewItem"

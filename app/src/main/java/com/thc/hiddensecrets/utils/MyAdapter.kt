@@ -5,17 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.thc.hiddensecrets.R
 import com.bumptech.glide.Glide
+import com.thc.hiddensecrets.R
+import com.thc.hiddensecrets.utils.ItemData
 
-class MyAdapter(private val context: Context, private val data: List<String>) :
+class MyAdapter(private val context: Context, private var data: MutableList<ItemData?>) :
     RecyclerView.Adapter<MyAdapter.ViewHolder>() {
 
-    // ViewHolder que irá manter as referências aos views do item
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val imageViewItem: ImageView = view.findViewById(R.id.imageViewItem)
-        // ajustar o titulo que vem da api´para o titulo
+        val textViewItem: TextView = view.findViewById(R.id.textViewItem)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -24,14 +25,23 @@ class MyAdapter(private val context: Context, private val data: List<String>) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        // Use Glide para carregar a imagem
+        val item = data[position]
         Glide.with(context)
-            .load(data[position]) // Aqui, `data` deve conter URLs das imagens
-            .placeholder(R.drawable.bg_button) // Imagem de placeholder enquanto a imagem é carregada
+            .load(item?.imageUrl)
+            .placeholder(R.drawable.bg_button)
             .into(holder.imageViewItem)
+
+        holder.textViewItem.text = item?.description
     }
 
     override fun getItemCount(): Int {
         return data.size
     }
+
+    fun setData(newData: MutableList<ItemData?>) {
+        data.clear()
+        data.addAll(newData)
+        notifyDataSetChanged()  // Notifica o adaptador para atualizar a lista
+    }
 }
+

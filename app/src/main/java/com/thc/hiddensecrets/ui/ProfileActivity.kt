@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.thc.hiddensecrets.R
+import com.thc.hiddensecrets.utils.ItemData
 
 class ProfileActivity : AppCompatActivity() {
     private lateinit var recyclerView3: RecyclerView
@@ -20,9 +21,8 @@ class ProfileActivity : AppCompatActivity() {
         val bottomHome = bottom.menu.findItem(R.id.navigation_home)
 
         bottomHome.setOnMenuItemClickListener {
-            val intent: Intent = Intent(this, HomeActivity::class.java)
+            val intent = Intent(this, HomeActivity::class.java)
             startActivity(intent)
-            // Ação para o item "Home"
             true
         }
 
@@ -30,15 +30,15 @@ class ProfileActivity : AppCompatActivity() {
         recyclerView3.layoutManager = LinearLayoutManager(this)
 
         // Exemplo de URLs de imagens
-        val imageUrls = listOf(
-            "https://files.tecnoblog.net/wp-content/uploads/2022/09/stable-diffusion-imagem.jpg",
-            "https://cdn.pixabay.com/photo/2024/06/06/22/19/piece-8813495_640.png",
-            "https://files.tecnoblog.net/wp-content/uploads/2022/09/stable-diffusion-imagem.jpg",
-            "https://cdn.pixabay.com/photo/2024/06/06/22/19/piece-8813495_640.png",
-            "https://files.tecnoblog.net/wp-content/uploads/2022/09/stable-diffusion-imagem.jpg",
-            "https://cdn.pixabay.com/photo/2024/06/06/22/19/piece-8813495_640.png",
-            "https://files.tecnoblog.net/wp-content/uploads/2022/09/stable-diffusion-imagem.jpg",
-            "https://cdn.pixabay.com/photo/2024/06/06/22/19/piece-8813495_640.png",
+        val imageUrls:MutableList<ItemData?> = mutableListOf(
+            ItemData("https://files.tecnoblog.net/wp-content/uploads/2022/09/stable-diffusion-imagem.jpg",""),
+            ItemData("https://cdn.pixabay.com/photo/2024/06/06/22/19/piece-8813495_640.png",""),
+            ItemData("https://files.tecnoblog.net/wp-content/uploads/2022/09/stable-diffusion-imagem.jpg",""),
+            ItemData("https://cdn.pixabay.com/photo/2024/06/06/22/19/piece-8813495_640.png",""),
+            ItemData("https://files.tecnoblog.net/wp-content/uploads/2022/09/stable-diffusion-imagem.jpg",""),
+            ItemData("https://cdn.pixabay.com/photo/2024/06/06/22/19/piece-8813495_640.png",""),
+            ItemData("https://files.tecnoblog.net/wp-content/uploads/2022/09/stable-diffusion-imagem.jpg",""),
+            ItemData("https://cdn.pixabay.com/photo/2024/06/06/22/19/piece-8813495_640.png",""),
             // Adicione mais URLs conforme necessário
         )
 

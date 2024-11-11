@@ -1,3 +1,3 @@
 package com.thc.hiddensecrets.utils
 
-data class ItemData()
+data class ItemData(val imageUrl: String?, val description: String)
